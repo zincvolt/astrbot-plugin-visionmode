@@ -1,0 +1,4 @@
+name: astrbot_plugin_visionmode
+desc: 本地 VL / 第三方 / 关闭 三种读图方式切换
+author: local
+version: 1.0.0
