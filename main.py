@@ -15,6 +15,7 @@ from __future__ import annotations
 import base64
 import json
 import re
+import sys
 from pathlib import Path
 
 import httpx
@@ -23,7 +24,24 @@ from astrbot.api.event import AstrMessageEvent, filter
 
 ROOT = Path(r"D:\QQNTBOT")
 STATE = ROOT / "data" / "vision_mode.json"
-ADMINS = {"1154487120"}
+
+# 权限：优先用 access 统一判定，单拎时自动降级为本地名单（也能用）
+sys.path.insert(0, str(ROOT / "apps" / "AstrBot" / "data" / "plugins" / "astrbot_plugin_access"))
+try:
+    from unified_perm import is_admin as _unified_is_admin
+except ImportError:
+    _STANDALONE_ADMINS = {"1154487120"}
+    def _unified_is_admin(event):  # noqa: F811
+        uid = str(event.get_sender_id() or "")
+        return uid in _STANDALONE_ADMINS or getattr(event, "role", "") == "admin"
+
+# 本插件自声明指令（单拎时帮助/权限表自动读这里）
+DECLARED_COMMANDS = {
+    "/读图": ("看当前读图模式", "管理"),
+    "/读图 本地": ("图先本地 VL 转文字", "管理"),
+    "/读图 第三方": ("图片直接发 DeepSeek", "管理"),
+    "/读图 关": ("忽略图片", "管理"),
+}
 
 
 def load_vision_state() -> dict:
@@ -140,7 +158,7 @@ class Main(star.Star):
         if not body.startswith("读图"):
             return
 
-        if str(event.get_sender_id()) not in ADMINS:
+        if not _unified_is_admin(event):
             await event.send(event.plain_result("只有管理员能改读图方式"))
             event.stop_event()
             return

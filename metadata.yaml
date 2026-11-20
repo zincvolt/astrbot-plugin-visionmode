@@ -1,4 +1,4 @@
 name: astrbot_plugin_visionmode
-desc: 本地 VL / 第三方 / 关闭 三种读图方式切换
+desc: 本地 VL / 第三方 / 关闭 三种读图方式切换。整套 QQ 机器人方案主仓库：github.com/zincvolt/QQNTbotBUTafter261101
 author: local
 version: 1.0.0
