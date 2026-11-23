@@ -2,7 +2,7 @@
 
 State lives in ``data/vision_mode.json``:
 
-    {"mode": "local" | "third_party" | "off", "port": 8085, "model": "Qwen3VL-2B-Instruct"}
+    {"mode": "local" | "third_party" | "off", "port": 8085, "model": "Qwen3VL-4B-Instruct"}
 
 ``/读图 本地|第三方|关`` switches it. In ``local`` mode the peer plugin captions
 the image through the local VL server and injects the text, so the chat model
@@ -55,11 +55,11 @@ def load_vision_state() -> dict:
             data = json.loads(STATE.read_text(encoding="utf-8"))
             data.setdefault("mode", "local")
             data.setdefault("port", 8085)
-            data.setdefault("model", "Qwen3VL-2B-Instruct")
+            data.setdefault("model", "Qwen3VL-4B-Instruct")
             return data
         except (json.JSONDecodeError, OSError):
             pass
-    return {"mode": "local", "port": 8085, "model": "Qwen3VL-2B-Instruct"}
+    return {"mode": "local", "port": 8085, "model": "Qwen3VL-4B-Instruct"}
 
 
 def save_vision_state(state: dict) -> None:
